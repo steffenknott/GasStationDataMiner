@@ -4,11 +4,13 @@
 # Summary: Some core utils, like log json in file.
 
 import json
-from os import path
+import os
 import time
 
 def logRequestResponse(jsonData): #Logs the given jsonData in a logfile
                                   #with a timestamp in the filename.
     filePath = "log/" + time.strftime("%Y%m%d-%H%M%S") + ".log"
-    with open(filePath, 'w') as file:
-        json.dump(jsonData, file, indent=4, sort_keys=True)
+    if not os.path.exists(os.path.dirname(filePath)):
+    	os.makedirs(os.path.dirname(filePath))
+    with open(filePath, 'w+', encoding='utf-8') as file:
+        json.dump(jsonData, file, indent=4, sort_keys=True, ensure_ascii=False)
