@@ -26,5 +26,3 @@ else:
     print("Requesting list succeded.")
     utils.logRequestResponse(jsonData)
     
-    
-
