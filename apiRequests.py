@@ -29,7 +29,16 @@ def getApiKey():
         utils.logMessage("Reading Api Key done")
         return fields[0]
 
+
 def detailRequest(gasStationId):
+    '''Request detail information for a gasstation.
+
+    Keyword arguments:
+    gasStationId -- api id of the gasstation
+
+    Returns: json or None
+
+    '''
     try:
         utils.logMessage("Building parameter for detail request")
         payload = {'id': gasStationId, 'apikey': getApiKey()}
@@ -44,7 +53,19 @@ def detailRequest(gasStationId):
     except Exception as exc:
         raise
         
-def listRequest(lat, lng, rad, sort, type): #request nearby gasstations
+def listRequest(lat, lng, rad, sort, type):
+    '''Request nearby gasstations.
+
+    Keyword arguments:
+    lat -- Latitude of location
+    lng -- Longitude of location
+    rad -- Radius of request
+    sort -- 
+    type --
+
+    Returns:
+     
+    '''
     try:
         utils.logMessage("Building paraneter for list request")
         payload = {'lat': lat, 'lng': lng,'rad': rad,'sort': sort,'type': type, 'apikey': getApiKey()}    
@@ -57,6 +78,7 @@ def listRequest(lat, lng, rad, sort, type): #request nearby gasstations
             return None
     except Exception as exc:
         raise
+
     
 def getDetailRequestWasOk():
     return detailRequestOk

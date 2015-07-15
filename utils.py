@@ -4,7 +4,7 @@
 # Summary: Some core utils, like log json in file.
 
 import json
-from os import path
+import os
 import time
 import logging
 
@@ -16,11 +16,6 @@ debugLogFile=open(debugLogFilePath, 'a')
 #loggingMode = 3 : both
 loggingMode = 0
 
-def logRequestResponse(jsonData): #Logs the given jsonData in a logfile
-                                  #with a timestamp in the filename.
-    filePath = "log/" + time.strftime("%Y%m%d-%H%M%S") + "Request.log"
-    with open(filePath, 'w') as file:
-        json.dump(jsonData, file, indent=4, sort_keys=True)
         
 def logMessage(message):
     if loggingMode == 3:
@@ -32,3 +27,19 @@ def logMessage(message):
         print(message, file=debugLogFile)
     else:
         return
+
+def logRequestResponse(jsonData): 
+    '''Logs jsonData in a logfile with a timestamp in the filename.
+
+    Keyword arguments:
+    jsonData -- data which is logged
+
+    Returns: None
+
+    '''
+    filePath = "log/" + time.strftime("%Y%m%d-%H%M%S") + ".log"
+    if not os.path.exists(os.path.dirname(filePath)):
+        os.makedirs(os.path.dirname(filePath))
+    with open(filePath, 'w+', encoding='utf-8') as file:
+        json.dump(jsonData, file, indent=4, sort_keys=True, ensure_ascii=False)
+
