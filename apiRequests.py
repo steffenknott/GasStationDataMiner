@@ -4,7 +4,7 @@
 # Summary: Modul to do detail- or list-requests on the tankerkoenig api.
 
 import requests
-import json
+#import json
 import doctest
 import utils
 
@@ -42,9 +42,13 @@ def detailRequest(gasStationId):
     try:
         utils.logMessage("Building parameter for detail request")
         payload = {'id': gasStationId, 'apikey': getApiKey()}
-        utils.logMessage(payload)
+        #utils.logMessage("Payload: " + payload)
         utils.logMessage("Requesting details in progress...")
+        utils.logMessage("url: " + DETAIL_REQUEST_URL())
+        utils.logMessage("payload.id: " + payload["id"])
+        utils.logMessage("payload.apikey: " + payload["apikey"])
         response = requests.get(DETAIL_REQUEST_URL(), params=payload)
+        utils.logMessage("request done")
         if response.ok:
             return response.json()
         else:

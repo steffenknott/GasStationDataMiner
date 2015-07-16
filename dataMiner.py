@@ -12,9 +12,10 @@ import requests
 import json
 import doctest
 
-utils.loggingMode=3
+utils.loggingMode=0
 
 try:
+    utils.logMessage("Start mining at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
     utils.logMessage("Establishing DB connection")
     dbHandle = connectDb.connect()
     if dbHandle is None:
@@ -26,17 +27,35 @@ except Exception as exc:
         raise SystemExit
 
 try:
-    jsonData=apiRequests.listRequest("53.223546", "10.169761", "25", "price", "diesel")
-    stations= jsonData["stations"]
+    #Getting a list of all stations in in the db
+    stations= dbHandle.stations.find()
     for i in stations:
-        #utils.logMessage("Update gas station %s ( %s in %s)" i["id"] i["brand"] i["place"])
-        i["lastUpdate"]=datetime.datetime.now()
-        dbHandle.stations.update({'id':i["id"]}, i)
-        jsonData=apiRequests.detailRequest(i["id"])
-        pricingData = 
-        dbHandle.i["id"]
+        #iterate trough all stations and do a detailRequest
+        utils.logMessage("Getting details for stationId = " + i["id"])
+        detailRequestResult = apiRequests.detailRequest(i["id"])
+        if detailRequestResult is not None:
+            #build and add generally data to filtered result dict
+            filteredResult = dict()
+            filteredResult["dateTime"] = datetime.datetime.now()
+            filteredResult["stationId"] = i["id"]
+            if "diesel" in detailRequestResult["station"]:
+                #create a diesel price document
+                filteredResult["price"] =  detailRequestResult["station"]["diesel"]
+                dbHandle.dieselPrices.insert_one(filteredResult)
+                utils.logMessage("diesel added")
+            if "e5" in detailRequestResult["station"]:
+                #reuse diesel price document for e5 doc
+                filteredResult["price"] =  detailRequestResult["station"]["e5"]
+                dbHandle.e5Prices.insert_one(filteredResult)
+                utils.logMessage("e5 added")
+            if "e10" in detailRequestResult["station"]:
+                #reuse e5 price document for e10 doc
+                filteredResult["price"] =  detailRequestResult["station"]["e10"]
+                dbHandle.e10Prices.insert_one(filteredResult)
+                utils.logMessage("e10 added")
+    utils.logMessage("Finished mining at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
 except Exception as exc:
-        utils.logMessage("Exception while tupdate data in db: ", exc)
+        utils.logMessage("Exception while tupdate data in db: %s " %exc)
         raise SystemExit
     
     
