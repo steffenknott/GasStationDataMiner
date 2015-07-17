@@ -4,17 +4,14 @@
 # Summary: Modul to do detail- or list-requests on the tankerkoenig api.
 
 import requests
-#import json
 import doctest
 import utils
 
 detailRequestOk = False
 
-def DETAIL_REQUEST_URL():
-    return "https://creativecommons.tankerkoenig.de/json/detail.php"
-    
-def LIST_REQUEST_URL():
-    return "https://creativecommons.tankerkoenig.de/json/list.php"
+LIST_REQUEST_URL = "https://creativecommons.tankerkoenig.de/json/list.php"
+
+DETAIL_REQUEST_URL = "https://creativecommons.tankerkoenig.de/json/detail.php"
 
 def getApiKey():
     """" 
@@ -44,10 +41,10 @@ def detailRequest(gasStationId):
         payload = {'id': gasStationId, 'apikey': getApiKey()}
         #utils.logMessage("Payload: " + payload)
         utils.logMessage("Requesting details in progress...")
-        utils.logMessage("url: " + DETAIL_REQUEST_URL())
+        utils.logMessage("url: " + DETAIL_REQUEST_URL)
         utils.logMessage("payload.id: " + payload["id"])
         utils.logMessage("payload.apikey: " + payload["apikey"])
-        response = requests.get(DETAIL_REQUEST_URL(), params=payload)
+        response = requests.get(DETAIL_REQUEST_URL, params=payload)
         utils.logMessage("request done")
         if response.ok:
             return response.json()
@@ -57,7 +54,7 @@ def detailRequest(gasStationId):
     except Exception as exc:
         raise
         
-def listRequest(lat, lng, rad, sort, type):
+def listRequest(lat, lng, rad, sort="price", type="e10"):
     '''Request nearby gasstations.
 
     Keyword arguments:
@@ -74,7 +71,7 @@ def listRequest(lat, lng, rad, sort, type):
         utils.logMessage("Building paraneter for list request")
         payload = {'lat': lat, 'lng': lng,'rad': rad,'sort': sort,'type': type, 'apikey': getApiKey()}    
         utils.logMessage("Requesting nearby list")
-        response = requests.get(LIST_REQUEST_URL(), params=payload)
+        response = requests.get(LIST_REQUEST_URL, params=payload)
         if response.ok:
             return response.json()
         else:
