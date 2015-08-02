@@ -5,7 +5,10 @@
 
 import requests
 import doctest
-import utils
+import logging
+import logging.config
+
+logging.config.fileConfig('logging.conf')
 
 detailRequestOk = False
 
@@ -19,11 +22,12 @@ def getApiKey():
     False
     >>>
     """
-    utils.logMessage("Start Reading Api Key")
+    logger = logging.getLogger('apiRequests')
+    logger.info("Start Reading Api Key")
     file = open('api.key')
     for line in file:
         fields = line.strip().split()
-        utils.logMessage("Reading Api Key done")
+        logger.info("Reading Api Key done")
         return fields[0]
 
 
@@ -36,23 +40,25 @@ def detailRequest(gasStationId):
     Returns: json or None
 
     '''
+    logger = logging.getLogger('apiRequests')
     try:
-        utils.logMessage("Building parameter for detail request")
+        logger.info("Building parameter for detail request")
         payload = {'id': gasStationId, 'apikey': getApiKey()}
-        #utils.logMessage("Payload: " + payload)
-        utils.logMessage("Requesting details in progress...")
-        utils.logMessage("url: " + DETAIL_REQUEST_URL)
-        utils.logMessage("payload.id: " + payload["id"])
-        utils.logMessage("payload.apikey: " + payload["apikey"])
+        #logger.debug("Payload: " + payload)
+        logger.info("Requesting details in progress...")
+        logger.info("url: " + DETAIL_REQUEST_URL)
+        logger.info("payload.id: " + payload["id"])
+        logger.info("payload.apikey: " + payload["apikey"])
         response = requests.get(DETAIL_REQUEST_URL, params=payload)
-        utils.logMessage("request done")
+        logger.info("request done")
         if response.ok:
             return response.json()
         else:
-            utils.logMessage("Response was not ok.")
+            logger.error("Response was not ok.")
             return None
     except Exception as exc:
-        raise
+        logger.exception("Exception when requesting details for station with id " + gasStationId)
+        return None
         
 def listRequest(lat, lng, rad, sort="price", type="e10"):
     '''Request nearby gasstations.
@@ -67,18 +73,20 @@ def listRequest(lat, lng, rad, sort="price", type="e10"):
     Returns:
      
     '''
+    logger = logging.getLogger('apiRequests')
     try:
-        utils.logMessage("Building paraneter for list request")
+        logger.info("Building parameter for list request")
         payload = {'lat': lat, 'lng': lng,'rad': rad,'sort': sort,'type': type, 'apikey': getApiKey()}    
-        utils.logMessage("Requesting nearby list")
+        logger.info("Requesting nearby list")
         response = requests.get(LIST_REQUEST_URL, params=payload)
         if response.ok:
             return response.json()
         else:
-            utils.logMessage("Response was not ok.")
-            return None
+           logger.error("Response was not ok.")
+           return None
     except Exception as exc:
-        raise
+        logger.exception("Exception when requesting nearby stations.")
+        return None
 
     
 def getDetailRequestWasOk():

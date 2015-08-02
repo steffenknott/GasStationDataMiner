@@ -4,19 +4,23 @@
 # Summary: Modul to connect to a mongo db instance.
 
 import sys
-import utils
+import logging
+import logging.config
 
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
+logging.config.fileConfig('logging.conf')
+
 def connect(dbHost = "localhost", dbPort = 27017, dbName = "euto"):
+    logger = logging.getLogger('database')
     """ Connect to MongoDB """
     try:
         c = MongoClient(dbHost, dbPort)
-        utils.logMessage("Connected successfully")
+        logger.info("Connected successfully")
     except ConnectionFailure as e:
-        utils.logMessage("Could not connect to MongoDB: %s" % e)
-        return null
+        logger.exception("Could not connect to MongoDB.")
+        return None
     # getting a datebase handle to the db
     return c.euto   
     

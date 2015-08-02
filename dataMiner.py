@@ -80,7 +80,7 @@ if __name__ == "__main__":
         logger.info("Finished mining at " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
     except Exception as exc:
         logger = logging.getLogger('database')
-        logger.exception("Exception while tupdate data in db.")
+        logger.exception("Exception while trying to act on db.")
         raise SystemExit
         
         
