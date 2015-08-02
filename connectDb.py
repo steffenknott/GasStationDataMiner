@@ -4,15 +4,17 @@
 # Summary: Modul to connect to a mongo db instance.
 
 import sys
+import os
 import logging
 import logging.config
 
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 logging.config.fileConfig('logging.conf')
 
-def connect(dbHost = "localhost", dbPort = 27017, dbName = "euto"):
+def connect(dbHost = "192.168.2.5", dbPort = 27017, dbName = "euto"):
     logger = logging.getLogger('database')
     """ Connect to MongoDB """
     try:

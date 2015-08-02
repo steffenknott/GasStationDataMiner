@@ -2,12 +2,13 @@
 # Date: 03.07.2015
 # Author: dtonal - Torben Mueller <dtonal@posteo.de>
 # Summary: Modul to do detail- or list-requests on the tankerkoenig api.
-
+import os
 import requests
 import doctest
 import logging
 import logging.config
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 logging.config.fileConfig('logging.conf')
 
 detailRequestOk = False

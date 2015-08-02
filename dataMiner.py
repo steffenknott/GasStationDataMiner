@@ -3,6 +3,7 @@
 # Author: dtonal - Torben Mueller <dtonal@posteo.de>, Eugen Geist
 # Summary: Modul to do first request testing.
 import sys
+import os
 import datetime
 import requests
 import doctest
@@ -12,7 +13,7 @@ import logging.config
 import apiRequests
 import connectDb
 
-
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 logging.config.fileConfig('logging.conf')
 
 def addStationsInLocationToDb(lat, lng, rad):
