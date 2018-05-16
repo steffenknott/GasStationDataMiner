@@ -14,8 +14,8 @@ logging.config.fileConfig('logging.conf')
 detailRequestOk = False
 
 LIST_REQUEST_URL = "https://creativecommons.tankerkoenig.de/json/list.php"
-
 DETAIL_REQUEST_URL = "https://creativecommons.tankerkoenig.de/json/detail.php"
+PRICES_REQUEST_URL = "https://creativecommons.tankerkoenig.de/json/prices.php"
 
 def getApiKey():
     """" 
@@ -89,6 +89,35 @@ def listRequest(lat, lng, rad, sort="price", type="e10"):
         logger.exception("Exception when requesting nearby stations.")
         return None
 
+
+def detailRequest(gasStationIds):
+    '''Request prices for up to 10 gasstations.
+
+    Keyword arguments:
+    gasStationIds -- comma-separated list of api ids of gasstations (max 10)
+
+    Returns: json or None
+
+    '''
+    logger = logging.getLogger('apiRequests')
+    try:
+        logger.info("Building parameter for prices request")
+        payload = {'ids': gasStationIds, 'apikey': getApiKey()}
+        #logger.debug("Payload: " + payload)
+        logger.info("Requesting prices in progress...")
+        logger.info("url: " + PRICES_REQUEST_URL)
+        logger.info("payload.ids: " + payload["ids"])
+        logger.info("payload.apikey: " + payload["apikey"])
+        response = requests.get(DETAIL_REQUEST_URL, params=payload)
+        logger.info("request done")
+        if response.ok:
+            return response.json()
+        else:
+            logger.error("Response was not ok.")
+            return None
+    except Exception as exc:
+        logger.exception("Exception when requesting prices for station with id " + gasStationId)
+        return None
     
 def getDetailRequestWasOk():
     return detailRequestOk
